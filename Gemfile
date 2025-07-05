@@ -44,7 +44,7 @@ gem "thruster", require: false
 
 # 形態素解析
 gem "mecab"
-# gem "natto" # mecabの拡張ライブラリ
+gem "natto" # mecabの拡張ライブラリ
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -54,7 +54,14 @@ group :development, :test do
   gem "brakeman", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
+  gem "rubocop-rails-omakase"
+
+  # デバッグ用
+  gem "pry-rails"
+  gem "pry-byebug"
+  gem "pry-remote" # Rails7でデバッグ時標準入力が見えない問題に対処
+  gem "better_errors" # デフォルトのエラーをわかりやすく整形してくれる
+  gem "binding_of_caller" # ブラウザ上でirbを使えるようにする
 end
 
 group :development do
