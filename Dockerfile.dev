@@ -26,6 +26,9 @@ RUN apt-get update -qq && apt-get install -y ca-certificates curl gnupg && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# mecab-config検索コマンド対策。パスの指定
+ENV MECAB_PATH /usr/lib/aarch64-linux-gnu/libmecab.so
+
 # アプリケーションディレクトリの作成
 RUN mkdir /myapp
 WORKDIR /myapp
