@@ -2,17 +2,21 @@
 
 <div class="p-4 border rounded shadow-md">
   <% @translated_words.each do |word| %>
-    <% color_class = case word[:pos]
-                     when '名詞' then 'text-blue-600'
-                     when '動詞' then 'text-red-600'
-                     when '助詞' then 'text-green-600'
-                     when '形容詞' then 'text-purple-600'
-                     when '記号' then 'text-gray-500'
-                     else 'text-black' # その他の品詞
-                     end %>
-    <span class="<%= color_class %> mr-1" title="<%= word[:pos] %>">
-      <%= word[:surface] %>
-    </span>
+    <% if word[:pos] == "LINEBREAK" %>
+      <br>
+    <% else %>
+      <% color_class = case word[:pos]
+                       when '名詞' then 'text-blue-600'
+                       when '動詞' then 'text-red-600'
+                       when '助詞' then 'text-green-600'
+                       when '形容詞' then 'text-purple-600'
+                       when '記号' then 'text-gray-500'
+                       when '助動詞' then 'text-orange-600'
+                       when '副詞' then 'text-indigo-600'
+                       else 'text-black'
+                       end %>
+      <span class="<%= color_class %>" title="<%= word[:pos] %>"><%= word[:surface] %></span>
+    <% end %>
   <% end %>
 </div>
 
