@@ -43,7 +43,6 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 # 形態素解析
-gem "mecab"
 gem "natto" # mecabの拡張ライブラリ
 
 group :development, :test do
