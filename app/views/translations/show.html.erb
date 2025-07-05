@@ -1,0 +1,19 @@
+<h1 class="text-2xl font-bold mb-4">解析結果</h1>
+
+<div class="p-4 border rounded shadow-md">
+  <% @analyzed_words.each do |word| %>
+    <% color_class = case word[:pos]
+                     when '名詞' then 'text-blue-600'
+                     when '動詞' then 'text-red-600'
+                     when '助詞' then 'text-green-600'
+                     when '形容詞' then 'text-purple-600'
+                     when '記号' then 'text-gray-500'
+                     else 'text-black' # その他の品詞
+                     end %>
+    <span class="<%= color_class %> mr-1" title="<%= word[:pos] %>">
+      <%= word[:surface] %>
+    </span>
+  <% end %>
+</div>
+
+<%= link_to "別のテキストを解析", new_analysis_path, class: "mt-4 inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded" %>

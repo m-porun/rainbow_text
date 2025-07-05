@@ -1,0 +1,8 @@
+<h1>がめんだよ</h1>
+<%= form_with(url: translations_path, method: :post, local: true, data: { turbo: false }) do |form| %>
+  <div class="mb-4">
+    <%= form.label :text_to_analyze, "解析するテキスト", class: "block text-gray-700 text-sm font-bold mb-2" %>
+    <%= form.text_area :text_to_analyze, rows: 10, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+  <%= form.submit "解析", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+<% end %>
