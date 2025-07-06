@@ -43,7 +43,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 # 形態素解析
-gem "natto" # mecabの拡張ライブラリ
+gem "natto", platforms: [:ruby] # mecabの拡張ライブラリ
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
