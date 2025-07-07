@@ -18,8 +18,8 @@ class TranslationsController < ApplicationController
           @translated_words << { surface: "\n", pos: "LINEBREAK" }
         elsif segment.present? # 解析
           nm.parse(segment) do |n|
-            # BOSまたはEOSノードはスキップする
-            next if n.feature.include?("BOS/EOS")
+            # EOSノードはスキップする
+            next if n.is_eos?
             # 表層形\品詞,品詞細分類1,品詞細分類2,品詞細分類3,活用型,活用形,原形,読み,発音
             # という並びのうち、表層系surfaceと品詞featureの先頭index[0]を取得, part_of_speechに入れる
             pos = n.feature.split(",")[0]
