@@ -1,16 +1,11 @@
-# fly.toml app configuration file generated for rainbow-text on 2025-07-06T01:07:42+09:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = 'rainbow-text'
 primary_region = 'nrt'
 
 [build]
-dockerfile = 'Dockerfile'
+  dockerfile = 'dockerfile'
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
@@ -18,7 +13,4 @@ dockerfile = 'Dockerfile'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
-  architecture = 'aarch64'
+  size = 'shared-cpu-1x'
