@@ -5,14 +5,17 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
+    apt-get install \
     curl \
     libjemalloc2 \
     libvips \
     postgresql-client \
     mecab \
+    libmecab2 \
     libmecab-dev \
-    mecab-ipadic-utf8 && \
+    mecab-ipadic \
+    mecab-ipadic-utf8 \
+    mecab-utils && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
