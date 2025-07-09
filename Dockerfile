@@ -1,90 +1,42 @@
-FROM docker.io/library/ruby:3.3.6-slim AS base
+FROM ruby:3.3.6
 
-# Rails app lives here
-WORKDIR /rails
+# 環境変数の設定
+ENV LANG C.UTF-8  # 日本語対応
+ENV TZ Asia/Tokyo # タイムゾーンを日本に設定
 
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install \
-    curl \
-    libjemalloc2 \
-    libvips \
-    postgresql-client \
+# 必要なパッケージのインストール
+RUN apt-get update -qq && apt-get install -y ca-certificates curl gnupg && \
+    # Node.js & Yarn のリポジトリ設定
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    NODE_MAJOR=20 && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update -qq && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    nodejs \
+    yarn \
+    vim \
     mecab \
-    libmecab2 \
     libmecab-dev \
-    mecab-ipadic \
-    mecab-ipadic-utf8 \
-    mecab-utils && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    mecab-ipadic-utf8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development" \
-    MECAB_PATH="/usr/lib/aarch64-linux-gnu/libmecab.so"
+# mecab-config検索コマンド対策。パスの指定
+ENV MECAB_PATH /usr/lib/aarch64-linux-gnu/libmecab.so
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
+# アプリケーションディレクトリの作成
+RUN mkdir /myapp
+WORKDIR /myapp
 
-# Install packages needed to build gems and node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev node-gyp pkg-config python-is-python3 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+# Bundlerのインストール
+# GemfileとGemfile.lockを先にコピー
+COPY Gemfile* ./
+# BundlerとGemを先にインストールすることで、アプリケーションコードの変更時にGemの再インストールを避ける
+RUN bundle install
 
-# Install JavaScript dependencies
-ARG NODE_VERSION=20.19.2
-ARG YARN_VERSION=1.22.22
-ENV PATH=/usr/local/node/bin:$PATH
-RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    npm install -g yarn@$YARN_VERSION && \
-    rm -rf /tmp/node-build-master
-
-# Install application gems
-COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
-
-# Install node modules
-COPY package.json yarn.lock ./
-RUN yarn install --immutable
-
-# Copy application code
-COPY . .
-
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-RUN rm -rf node_modules
-
-
-# Final stage for app image
-FROM base
-
-# Copy built artifacts: gems, application
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=build /rails /rails
-
-# entrypoint.shを作って、権限付与 
-COPY entrypoint.sh /usr/bin/entrypoint.sh
-RUN chmod +x /usr/bin/entrypoint.sh
-
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
-
-# Entrypoint prepares the database.
-ENTRYPOINT ["entrypoint.sh"]
-
-# Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+# アプリケーションのコードをコピー
+COPY . /myapp
