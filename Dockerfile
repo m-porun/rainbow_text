@@ -15,7 +15,6 @@ RUN apt-get update -qq && apt-get install -y ca-certificates curl gnupg && \
     echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && apt-get install -y \
     build-essential \
-    libpq-dev \
     nodejs \
     yarn \
     vim \
@@ -40,3 +39,6 @@ RUN bundle install
 
 # アプリケーションのコードをコピー
 COPY . /myapp
+
+# Fly.ioデプロイでRailsサーバー使わせるよう
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000", "-e", "production"]
