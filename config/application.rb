@@ -3,14 +3,14 @@ require_relative "boot"
 # DBは使わないのでコメントアウト
 # require "rails/all"
 
-%w(
+%w[
   action_controller
   action_view
   action_mailer
   active_job
   rails/test_unit
   sprockets
-).each do |framework|
+].each do |framework|
   begin
     require "#{framework}/railtie"
   rescue LoadError

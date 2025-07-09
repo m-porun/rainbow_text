@@ -7,7 +7,7 @@ gem "propshaft"
 # Use postgresql as the database for Active Record
 # gem "pg", "~> 1.1"
 # 代わりにSQLiteでごまかす
-gem 'sqlite3'
+gem "sqlite3"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
@@ -45,7 +45,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 # 形態素解析
-gem "natto", platforms: [:ruby] # mecabの拡張ライブラリ
+gem "natto", platforms: [ :ruby ] # mecabの拡張ライブラリ
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
