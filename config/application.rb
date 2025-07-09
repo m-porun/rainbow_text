@@ -7,6 +7,7 @@ require_relative "boot"
   action_controller
   action_view
   action_mailer
+  action_cable
   active_job
   rails/test_unit
   sprockets
