@@ -9,7 +9,6 @@ require "action_mailer/railtie"
 require "action_cable/engine"  # engineとして読み込む
 require "active_job/railtie"
 require "rails/test_unit/railtie"
-require "sprockets/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
