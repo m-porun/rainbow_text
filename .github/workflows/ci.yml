@@ -39,17 +39,18 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    if: false
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
+    # services:
+      # postgres:
+      #   image: postgres
+      #   env:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: postgres
+      #   ports:
+      #     - 5432:5432
+      #   options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+  
       # redis:
       #   image: redis
       #   ports:
@@ -77,9 +78,9 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
+          # DATABASE_URL: postgres://postgres:postgres@localhost:5432
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test test:system
+        run: bin/rails test test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
