@@ -3,20 +3,13 @@ require_relative "boot"
 # DBは使わないのでコメントアウト
 # require "rails/all"
 
-%w[
-  action_controller
-  action_view
-  action_mailer
-  action_cable
-  active_job
-  rails/test_unit
-  sprockets
-].each do |framework|
-  begin
-    require "#{framework}/railtie"
-  rescue LoadError
-  end
-end
+require "action_controller/railtie"
+require "action_view/railtie"
+require "action_mailer/railtie"
+require "action_cable/engine"  # engineとして読み込む
+require "active_job/railtie"
+require "rails/test_unit/railtie"
+require "sprockets/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
