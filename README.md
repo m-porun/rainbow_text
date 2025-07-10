@@ -43,3 +43,12 @@
     - おそらく、MeCabライブラリをRuby環境で使うためのgem nattoに付随してインストールするgem ffiが、想定しているLinuxアーキテクチャと異なるものでインストールしているため
 - 青空文庫にある文章をいくつか見繕って、View上でカラフルに読めるようにする
 
+---
+
+## 起動方法
+```
+docker compose up -d
+docker compose exec web bin/rails s -b '0.0.0.0' -p 3000
+# 別タブで
+docker compose exec web foreman start -f Procfile.dev
+```
